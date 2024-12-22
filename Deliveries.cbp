@@ -20,16 +20,24 @@
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="`pkg-config gtk+-2.0 --cflags`" />
 			<Add option="-Wall" />
+			<Add option="`pkg-config gtk+-2.0 --cflags`" />
 		</Compiler>
 		<Linker>
-			<Add option="`pkg-config gtk+-2.0 --libs`" />
+			<Add option="`pkg-config gtk+-2.0 --libs` -rdynamic" />
 		</Linker>
-		<Unit filename="dataStructures" />
+		<Unit filename="dataStructures.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="dataStructures.h" />
+		<Unit filename="helpers.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="helpers.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="styles.css" />
 		<Extensions />
 	</Project>
 </CodeBlocks_project_file>
