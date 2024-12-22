@@ -196,9 +196,15 @@ int main(int argc, char *argv[]) {
     head = NULL;
     g_object_set_data(G_OBJECT(window), "customer_head", head);
 
+    city* citiesRoot = createCityTree();
+    g_object_set_data(G_OBJECT(window), "cities_root", citiesRoot);
+
+    g_print("The distance between Ushuaia and Mendoza is %d\n",calculateDistance(citiesRoot,"Mendoza","Ushuaia"));
+
     gtk_main();
 
     freeCustomers(head);
+    freeCities(citiesRoot);
 
     return 0;
 
