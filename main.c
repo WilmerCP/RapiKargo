@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "dataStructures.h"
+#include <stdbool.h>
 
 GtkWidget *window;
 GtkWidget *stack;
@@ -13,6 +14,12 @@ GtkWidget *surnameField;
 GtkWidget *citiesComboBox1;
 GtkTreeModel *citiesModel;
 GtkTreeIter iter1;
+
+GtkWidget *customerIdField;
+GtkWidget *descriptionField;
+GtkWidget *citiesComboBox2;
+GtkTreeIter iter2;
+GtkTreeModel *citiesModel2;
 
 GtkTreeStore *treeStore;
 GtkTreeView *customersView;
@@ -90,6 +97,102 @@ void goToListCustomers (GtkButton *b){
 
 }
 
+void on_goToListCargos_clicked(GtkButton *b){
+
+    priorityQueue* queue = (priorityQueue*) g_object_get_data(G_OBJECT(window),"priority_queue");
+
+    int i;
+
+    for(i = 0; i < queue->items; i++){
+
+        g_print("From %s to %s distance: %d\n",queue->heap[i]->from,queue->heap[i]->to,queue->heap[i]->distance);
+
+
+    }
+
+}
+
+void on_newCargoButton_clicked(GtkButton *b){
+
+    int id;
+    const char* description = gtk_entry_get_text(GTK_ENTRY(descriptionField));
+    const char* customerId = gtk_entry_get_text(GTK_ENTRY(customerIdField));
+    gchar* toCity = NULL;
+    customer* head = (customer*) g_object_get_data(G_OBJECT(window),"customer_head");
+    priorityQueue* queue = (priorityQueue*) g_object_get_data(G_OBJECT(window),"priority_queue");
+    city* root = (city*) g_object_get_data(G_OBJECT(window),"cities_root");
+
+    if(strlen(description) > 2 && strlen(customerId) == 9){
+
+        // Get the destination city from the comboBox
+        if (gtk_combo_box_get_active_iter(GTK_COMBO_BOX(citiesComboBox2), &iter2)) {
+            gtk_tree_model_get(citiesModel2, &iter2, 0,&toCity, -1);
+        }
+
+        id = generateId();
+
+        int num_chars_parsed = 0;
+        int numericId;
+
+        // Try to parse the integer and capture where parsing ends
+        if (sscanf(customerId, "%d%n", &numericId, &num_chars_parsed) == 1) {
+
+        // Check if parsing consumed the entire string
+            if (customerId[num_chars_parsed] == '\0') {
+
+                customer* c = findCustomer(head,numericId);
+
+                if(c != NULL){
+
+                    int distance = calculateDistance(root,c->city,(char*)toCity);
+
+                    if(distance >= 0){
+
+                        delivery* newCargo = createNewDelivery(distance,c->city,(char*)toCity,numericId,id,description);
+
+                        enqueueDelivery(queue,newCargo);
+
+                        g_print("A new delivery was created successfully\n");
+
+                        gtk_entry_set_text(GTK_ENTRY(customerIdField), "");
+                        gtk_entry_set_text(GTK_ENTRY(descriptionField), "");
+
+                        g_free(toCity);
+
+                    }else{
+
+                    g_print("There was an error calculating the distance\n");
+
+                    }
+
+
+
+                }else{
+
+                    g_print("Please enter a valid customer ID\n");
+
+                }
+
+            }else{
+
+                g_print("Please enter a valid customer ID\n");
+
+            }
+
+        }else{
+
+        g_print("Please enter a valid customer ID\n");
+
+        }
+
+    }else{
+
+        g_print("Please enter valid data\n");
+
+    }
+
+}
+
 void on_newCustomerButton_clicked (GtkButton *b){
 
     int id;
@@ -145,6 +248,9 @@ int main(int argc, char *argv[]) {
     citiesComboBox1 = GTK_WIDGET(gtk_builder_get_object(builder,"citiesComboBox1"));
     customersView = GTK_TREE_VIEW(gtk_builder_get_object(builder,"treeStoreView"));
     treeStore = GTK_TREE_STORE(gtk_builder_get_object(builder,"treeStore"));
+    customerIdField = GTK_WIDGET(gtk_builder_get_object(builder,"customerid"));
+    descriptionField = GTK_WIDGET(gtk_builder_get_object(builder,"description"));
+    citiesComboBox2 = GTK_WIDGET(gtk_builder_get_object(builder,"citiesComboBox2"));
 
     c1 = GTK_TREE_VIEW_COLUMN(gtk_builder_get_object(builder,"c1"));
     c2 = GTK_TREE_VIEW_COLUMN(gtk_builder_get_object(builder,"c2"));
@@ -160,6 +266,8 @@ int main(int argc, char *argv[]) {
     gtk_tree_view_column_add_attribute(c2,cr2,"text",1);
     gtk_tree_view_column_add_attribute(c3,cr3,"text",2);
     gtk_tree_view_column_add_attribute(c4,cr4,"text",3);
+
+    g_object_set(cr4, "editable", TRUE, NULL);
 
 
     gtk_tree_view_set_model(customersView, GTK_TREE_MODEL(treeStore));
@@ -192,6 +300,8 @@ int main(int argc, char *argv[]) {
 
     seedRand();
     citiesModel = gtk_combo_box_get_model(GTK_COMBO_BOX(citiesComboBox1));
+    citiesModel2 = gtk_combo_box_get_model(GTK_COMBO_BOX(citiesComboBox2));
+
     customer* head = (customer*) malloc(sizeof(customer));
     head = NULL;
     g_object_set_data(G_OBJECT(window), "customer_head", head);
@@ -199,7 +309,8 @@ int main(int argc, char *argv[]) {
     city* citiesRoot = createCityTree();
     g_object_set_data(G_OBJECT(window), "cities_root", citiesRoot);
 
-    g_print("The distance between Ushuaia and Mendoza is %d\n",calculateDistance(citiesRoot,"Mendoza","Ushuaia"));
+    priorityQueue* queue = createNewQueue(10);
+    g_object_set_data(G_OBJECT(window),"priority_queue",queue);
 
     gtk_main();
 

@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 customer* newCustomer(customer* head, const char* name, const char* surname, char* city, int id){
 
@@ -45,6 +46,23 @@ void freeCustomers(customer* head) {
         head = head->next;
         free(temp);
     }
+}
+
+customer* findCustomer(customer* head, int id){
+
+    while(head != NULL){
+
+        if(head->id == id){
+
+            return head;
+
+        }
+
+        head = head->next;
+    }
+
+    return NULL;
+
 }
 
 //Functions related to cities tree
@@ -243,5 +261,171 @@ int calculateDistance(city* root, char name1[], char name2[]){
     int lcadepth = node1->depth;
 
     return (d1+d2 - 2*lcadepth);
+
+}
+
+int parentNode(int i){
+
+    if(i == 0){
+
+        return -1;
+
+    }
+
+    return (i-1) / 2;
+
+}
+
+int leftChild(int i){
+
+    return 2*i + 1;
+
+}
+
+int rightChild(int i){
+
+    return 2*i +2;
+
+}
+
+void swapItems(delivery** a, delivery** b){
+
+    delivery* temp = *a;
+
+    *a = *b;
+    *b =temp;
+
+}
+
+
+priorityQueue* createNewQueue(int capacity){
+
+    if(capacity <= 0)
+        return NULL;
+
+    priorityQueue* pq = (priorityQueue*) malloc(sizeof(priorityQueue));
+
+    pq->heap = (delivery**) malloc(sizeof(delivery)*capacity);
+
+    pq->capacity = capacity;
+    pq->items = 0;
+
+    return pq;
+
+}
+
+delivery* createNewDelivery(int distance, char from[],char to[],int customerId, int id,const char description[]){
+
+    delivery* temp = (delivery*) malloc(sizeof(delivery));
+
+    temp -> distance = distance;
+    temp -> customerId = customerId;
+    temp -> id = id;
+
+    strcpy(temp->description,description);
+    strcpy(temp->from,from);
+    strcpy(temp->to,to);
+
+    return temp;
+
+}
+
+void increaseHeapSize(priorityQueue* pq){
+
+    if(pq ==  NULL)
+        return;
+
+    pq->capacity = pq->capacity*2;
+
+    pq->heap = (delivery**) realloc(pq->heap,sizeof(delivery)*pq->capacity);
+
+}
+
+void heapifyUp(delivery** heap, int index){
+
+    printf("Im fixing the order\n");
+
+    int p = parentNode(index);
+
+
+    while(index>0 && heap[index]->distance<heap[p]->distance){
+
+        swapItems(&heap[index],&heap[p]);
+
+        index = p;
+        p = parentNode(p);
+
+    }
+
+}
+
+void enqueueDelivery(priorityQueue* pq, delivery* element){
+
+    if(pq == NULL || element == NULL)
+        return;
+
+    if(pq->items == pq->capacity){
+
+        increaseHeapSize(pq);
+
+    }
+
+    pq->heap[pq->items] = element;
+
+    heapifyUp(pq->heap,pq->items);
+
+    pq->items++;
+
+}
+
+void heapifyDown(priorityQueue* pq,int index){
+
+    int smallest = index;
+
+    int left = leftChild(index);
+
+    int right =  rightChild(index);
+
+    delivery** heap = pq->heap;
+
+    if(left < pq->items && heap[left]->distance < heap[smallest]->distance){
+
+        smallest = left;
+
+    }
+
+    if(right < pq->items && heap[right]->distance < heap[smallest]->distance){
+
+        smallest = right;
+
+    }
+
+    if(smallest != index){
+
+        swapItems(&heap[smallest],&heap[index]);
+
+        heapifyDown(pq,smallest);
+
+    }
+
+}
+
+delivery* dequeueDelivery(priorityQueue* pq){
+
+    delivery* temp = pq->heap[0];
+
+    swapItems(&pq->heap[0],&pq->heap[pq->items-1]);
+
+    heapifyDown(pq,0);
+
+    return temp;
+
+}
+
+
+void freeQueue(priorityQueue* pq){
+
+    free(pq->heap);
+    free(pq);
 
 }
