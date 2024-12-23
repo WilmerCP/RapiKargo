@@ -40,6 +40,14 @@ city* createCityTree();
 city* findCityNode(city* root, char name[]);
 int calculateDistance(city* root, char name1[], char name2[]);
 
+typedef enum {
+
+    PROCESSING,
+    ON_THE_WAY,
+    DELIVERED
+
+} DeliveryState;
+
 typedef struct delivery {
 
     int distance;
@@ -48,7 +56,7 @@ typedef struct delivery {
     int customerId;
     char from[20];
     char to[20];
-
+    DeliveryState state;
 
 } delivery;
 
@@ -69,5 +77,7 @@ void enqueueDelivery(priorityQueue* pq, delivery* element);
 delivery* dequeueDelivery(priorityQueue* pq);
 
 void freeQueue(priorityQueue* pq);
+
+char* get_delivery_state_name(DeliveryState state);
 
 #endif // DATASTRUCTURES_H

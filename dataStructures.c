@@ -173,7 +173,7 @@ city* createCityTree(){
 
                     city* ushuaia = newCity("Ushuaia",neuquen);
 
-    printAllCities(buenosAires);
+    //printAllCities(buenosAires);
 
     return buenosAires;
 
@@ -321,6 +321,7 @@ delivery* createNewDelivery(int distance, char from[],char to[],int customerId, 
     temp -> distance = distance;
     temp -> customerId = customerId;
     temp -> id = id;
+    temp -> state = PROCESSING;
 
     strcpy(temp->description,description);
     strcpy(temp->from,from);
@@ -342,8 +343,6 @@ void increaseHeapSize(priorityQueue* pq){
 }
 
 void heapifyUp(delivery** heap, int index){
-
-    printf("Im fixing the order\n");
 
     int p = parentNode(index);
 
@@ -428,4 +427,33 @@ void freeQueue(priorityQueue* pq){
     free(pq->heap);
     free(pq);
 
+}
+
+char* get_delivery_state_name(DeliveryState state){
+
+    switch (state){
+
+        case PROCESSING:
+
+            return "İşleme alındı";
+
+            break;
+
+        case ON_THE_WAY:
+
+            return "Yolda";
+
+            break;
+
+        case DELIVERED:
+
+            return "Teslim edilmiş";
+
+            break;
+
+        default:
+
+            return "Bilinmeyen";
+
+    }
 }

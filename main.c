@@ -32,6 +32,19 @@ GtkCellRenderer *cr2;
 GtkCellRenderer *cr3;
 GtkCellRenderer *cr4;
 
+GtkTreeStore *cargoTreeStore;
+GtkTreeView *cargoView1;
+GtkTreeViewColumn *c5;
+GtkTreeViewColumn *c6;
+GtkTreeViewColumn *c7;
+GtkTreeViewColumn *c8;
+GtkTreeViewColumn *c9;
+GtkCellRenderer *cr5;
+GtkCellRenderer *cr6;
+GtkCellRenderer *cr7;
+GtkCellRenderer *cr8;
+GtkCellRenderer *cr9;
+
 
 
 void goToMenu (GtkButton *b){
@@ -101,13 +114,29 @@ void on_goToListCargos_clicked(GtkButton *b){
 
     priorityQueue* queue = (priorityQueue*) g_object_get_data(G_OBJECT(window),"priority_queue");
 
+    gtk_stack_set_visible_child_name(GTK_STACK(stack), "cargo_info_page");
+
+    gtk_tree_store_clear(cargoTreeStore);
+
+    GtkTreeIter iter;
+
     int i;
 
-    for(i = 0; i < queue->items; i++){
+    delivery** sortedArray = (delivery**) malloc(sizeof(delivery*)*queue->items);
 
-        g_print("From %s to %s distance: %d\n",queue->heap[i]->from,queue->heap[i]->to,queue->heap[i]->distance);
+    copy_array(queue->heap,sortedArray,sizeof(delivery*),queue->items);
 
+    mergeSort(sortedArray,0,queue->items-1);
 
+    for(i=0; i<queue->items;i++){
+
+            char id_str[20];  // Buffer to hold the converted string
+            snprintf(id_str, sizeof(id_str), "%d", sortedArray[i]->id);
+
+            gtk_tree_store_append(cargoTreeStore,&iter,NULL);
+
+            gtk_tree_store_set(cargoTreeStore,&iter,0,id_str,1,sortedArray[i]->from,2,sortedArray[i]->to,-1);
+            gtk_tree_store_set(cargoTreeStore,&iter,3,get_delivery_state_name(sortedArray[i]->state),4,sortedArray[i]->distance,-1);
     }
 
 }
@@ -271,6 +300,29 @@ int main(int argc, char *argv[]) {
 
 
     gtk_tree_view_set_model(customersView, GTK_TREE_MODEL(treeStore));
+
+    c5 = GTK_TREE_VIEW_COLUMN(gtk_builder_get_object(builder,"c5"));
+    c6 = GTK_TREE_VIEW_COLUMN(gtk_builder_get_object(builder,"c6"));
+    c7 = GTK_TREE_VIEW_COLUMN(gtk_builder_get_object(builder,"c7"));
+    c8 = GTK_TREE_VIEW_COLUMN(gtk_builder_get_object(builder,"c8"));
+    c9 = GTK_TREE_VIEW_COLUMN(gtk_builder_get_object(builder,"c9"));
+
+    cr5 = GTK_CELL_RENDERER(gtk_builder_get_object(builder,"cr5"));
+    cr6 = GTK_CELL_RENDERER(gtk_builder_get_object(builder,"cr6"));
+    cr7 = GTK_CELL_RENDERER(gtk_builder_get_object(builder,"cr7"));
+    cr8 = GTK_CELL_RENDERER(gtk_builder_get_object(builder,"cr8"));
+    cr9 = GTK_CELL_RENDERER(gtk_builder_get_object(builder,"cr9"));
+
+    gtk_tree_view_column_add_attribute(c5,cr5,"text",0);
+    gtk_tree_view_column_add_attribute(c6,cr6,"text",1);
+    gtk_tree_view_column_add_attribute(c7,cr7,"text",2);
+    gtk_tree_view_column_add_attribute(c8,cr8,"text",3);
+    gtk_tree_view_column_add_attribute(c9,cr9,"text",4);
+
+    cargoView1 = GTK_TREE_VIEW(gtk_builder_get_object(builder,"cargoView1"));
+    cargoTreeStore = GTK_TREE_STORE(gtk_builder_get_object(builder,"cargoTreeStore"));
+
+    gtk_tree_view_set_model(cargoView1, GTK_TREE_MODEL(cargoTreeStore));
 
     g_signal_connect(window,"destroy", G_CALLBACK(gtk_main_quit),NULL);
 
