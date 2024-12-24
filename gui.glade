@@ -16,6 +16,34 @@
       <column type="gint"/>
     </columns>
   </object>
+  <object class="GtkTreeStore" id="cargoTreeStore2">
+    <columns>
+      <!-- column-name ID -->
+      <column type="gchararray"/>
+      <!-- column-name From -->
+      <column type="gchararray"/>
+      <!-- column-name To -->
+      <column type="gchararray"/>
+      <!-- column-name Durum -->
+      <column type="gchararray"/>
+      <!-- column-name Süre -->
+      <column type="gint"/>
+    </columns>
+  </object>
+  <object class="GtkTreeStore" id="cargoTreeStore3">
+    <columns>
+      <!-- column-name ID -->
+      <column type="gchararray"/>
+      <!-- column-name From -->
+      <column type="gchararray"/>
+      <!-- column-name To -->
+      <column type="gchararray"/>
+      <!-- column-name Durum -->
+      <column type="gchararray"/>
+      <!-- column-name Süre -->
+      <column type="gint"/>
+    </columns>
+  </object>
   <object class="GtkTreeStore" id="treeStore">
     <columns>
       <!-- column-name İsim -->
@@ -220,6 +248,7 @@
                     <property name="receives-default">True</property>
                     <property name="halign">center</property>
                     <property name="valign">center</property>
+                    <signal name="clicked" handler="on_goToCargoHistory_clicked" swapped="no"/>
                     <style>
                       <class name="button"/>
                     </style>
@@ -676,7 +705,7 @@
           </packing>
         </child>
         <child>
-          <!-- n-columns=2 n-rows=3 -->
+          <!-- n-columns=2 n-rows=4 -->
           <object class="GtkGrid">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
@@ -792,7 +821,62 @@
                 <property name="can-focus">True</property>
                 <property name="shadow-type">in</property>
                 <child>
-                  <placeholder/>
+                  <object class="GtkTreeView" id="cargoView2">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="model">cargoTreeStore2</property>
+                    <property name="search-column">0</property>
+                    <property name="enable-grid-lines">both</property>
+                    <child internal-child="selection">
+                      <object class="GtkTreeSelection"/>
+                    </child>
+                    <child>
+                      <object class="GtkTreeViewColumn" id="c10">
+                        <property name="title" translatable="yes">ID</property>
+                        <property name="expand">True</property>
+                        <child>
+                          <object class="GtkCellRendererText" id="cr10"/>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkTreeViewColumn" id="c11">
+                        <property name="title" translatable="yes">From</property>
+                        <property name="expand">True</property>
+                        <child>
+                          <object class="GtkCellRendererText" id="cr11"/>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkTreeViewColumn" id="c12">
+                        <property name="title" translatable="yes">To</property>
+                        <property name="expand">True</property>
+                        <child>
+                          <object class="GtkCellRendererText" id="cr12"/>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkTreeViewColumn" id="c13">
+                        <property name="title" translatable="yes">Durum</property>
+                        <property name="expand">True</property>
+                        <child>
+                          <object class="GtkCellRendererText" id="cr13"/>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkTreeViewColumn" id="c14">
+                        <property name="title" translatable="yes">Süre</property>
+                        <property name="clickable">True</property>
+                        <property name="sort-column-id">0</property>
+                        <child>
+                          <object class="GtkCellRendererText" id="cr14"/>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
                 </child>
               </object>
               <packing>
@@ -802,10 +886,37 @@
             </child>
             <child>
               <object class="GtkButton">
-                <property name="label" translatable="yes">button</property>
+                <property name="label" translatable="yes">Detaylar</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
+                <signal name="clicked" handler="deliveredDetails" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left-attach">1</property>
+                <property name="top-attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton">
+                <property name="label" translatable="yes">Geri dön</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <signal name="clicked" handler="goToMenu" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left-attach">1</property>
+                <property name="top-attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton">
+                <property name="label" translatable="yes">Detaylar</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <signal name="clicked" handler="undeliveredDetails" swapped="no"/>
               </object>
               <packing>
                 <property name="left-attach">0</property>
@@ -814,14 +925,15 @@
             </child>
             <child>
               <object class="GtkButton">
-                <property name="label" translatable="yes">button</property>
+                <property name="label" translatable="yes">İşleme al</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
+                <signal name="clicked" handler="processCargos" swapped="no"/>
               </object>
               <packing>
-                <property name="left-attach">1</property>
-                <property name="top-attach">2</property>
+                <property name="left-attach">0</property>
+                <property name="top-attach">3</property>
               </packing>
             </child>
           </object>
@@ -829,6 +941,182 @@
             <property name="name">cargo_info_page</property>
             <property name="title" translatable="yes">page0</property>
             <property name="position">6</property>
+          </packing>
+        </child>
+        <child>
+          <!-- n-columns=2 n-rows=3 -->
+          <object class="GtkGrid">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <property name="row-spacing">10</property>
+            <property name="column-spacing">30</property>
+            <child>
+              <object class="GtkScrolledWindow">
+                <property name="width-request">440</property>
+                <property name="height-request">250</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="shadow-type">in</property>
+                <child>
+                  <object class="GtkTreeView" id="cargoView3">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="model">cargoTreeStore3</property>
+                    <property name="search-column">0</property>
+                    <property name="enable-grid-lines">both</property>
+                    <child internal-child="selection">
+                      <object class="GtkTreeSelection"/>
+                    </child>
+                    <child>
+                      <object class="GtkTreeViewColumn" id="c15">
+                        <property name="title" translatable="yes">ID</property>
+                        <property name="expand">True</property>
+                        <child>
+                          <object class="GtkCellRendererText" id="cr15"/>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkTreeViewColumn" id="c16">
+                        <property name="title" translatable="yes">From</property>
+                        <property name="expand">True</property>
+                        <child>
+                          <object class="GtkCellRendererText" id="cr16"/>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkTreeViewColumn" id="c17">
+                        <property name="title" translatable="yes">To</property>
+                        <property name="expand">True</property>
+                        <child>
+                          <object class="GtkCellRendererText" id="cr17"/>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkTreeViewColumn" id="c18">
+                        <property name="title" translatable="yes">Durum</property>
+                        <property name="expand">True</property>
+                        <child>
+                          <object class="GtkCellRendererText" id="cr18"/>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkTreeViewColumn" id="c19">
+                        <property name="title" translatable="yes">Süre</property>
+                        <property name="clickable">True</property>
+                        <property name="sort-column-id">0</property>
+                        <child>
+                          <object class="GtkCellRendererText" id="cr19"/>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="left-attach">1</property>
+                <property name="top-attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="valign">center</property>
+                <property name="orientation">vertical</property>
+                <property name="spacing">26</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Gönderi geçmişi sorgulama</property>
+                    <attributes>
+                      <attribute name="font-desc" value="Sans Bold 16"/>
+                    </attributes>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="searchById">
+                    <property name="width-request">220</property>
+                    <property name="height-request">45</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                    <property name="xalign">0.05999999865889549</property>
+                    <property name="placeholder-text" translatable="yes">Müşteri ID</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton">
+                    <property name="label" translatable="yes">Sorgula</property>
+                    <property name="width-request">110</property>
+                    <property name="height-request">48</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                    <signal name="clicked" handler="showHistory" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="left-attach">0</property>
+                <property name="top-attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton">
+                <property name="label" translatable="yes">Geri dön</property>
+                <property name="width-request">110</property>
+                <property name="height-request">48</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <property name="halign">center</property>
+                <property name="valign">center</property>
+                <signal name="clicked" handler="goToMenu" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left-attach">1</property>
+                <property name="top-attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+          <packing>
+            <property name="name">customer_history_page</property>
+            <property name="title" translatable="yes">page0</property>
+            <property name="position">7</property>
           </packing>
         </child>
       </object>

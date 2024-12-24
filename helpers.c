@@ -80,6 +80,9 @@ void merge(delivery** arr, int l, int m, int r){
         j++;
         k++;
     }
+
+    free(R);
+    free(L);
 }
 
 void mergeSort(delivery** arr, int l, int r){
@@ -91,4 +94,93 @@ void mergeSort(delivery** arr, int l, int r){
 
         merge(arr, l, m, r);
     }
+}
+
+delivery** joinArrays(delivery** arr1, int size1, delivery** arr2, int size2){
+
+    int newSize = size1+size2;
+
+    delivery** joinedArray = (delivery**) malloc(sizeof(delivery*)*newSize);
+
+    int i;
+
+    for(i=0;i<size1;i++){
+
+        joinedArray[i] = arr1[i];
+
+    }
+
+    int j = size1;
+
+    for(i=0;i<size2;i++){
+
+        joinedArray[j] = arr2[i];
+        j++;
+
+    }
+
+    return joinedArray;
+
+}
+
+void removeFromList(sortedList* li, int index) {
+    // Check if the index is within bounds
+    if (index >= li->items) {
+        printf("Index out of bounds\n");
+        return;
+    }
+
+    for (int i = index; i < (li->items - 1); i++) {
+        li->arr[i] = li->arr[i + 1];
+    }
+
+    li->items--;
+}
+
+void printAllCargos(sortedList* li){
+
+    printf("Number of items of the list: %d\n",li->items);
+    printf("Capacity of the list: %d\n",li->capacity);
+    int i;
+
+    for(i=0; i<li->items;i++){
+
+    printf("%s\n",li->arr[i]->description);
+
+    }
+
+}
+
+void printArray(delivery** arr,int n){
+
+    int i;
+
+    for(i=0; i<n;i++){
+
+    printf("%s\n",arr[i]->description);
+
+    }
+
+}
+
+delivery* binarySearch(delivery** arr, int low, int high, int id)
+{
+    while (low <= high) {
+        int mid = low + (high - low) / 2;
+
+        // Check if x is present at mid
+        if (arr[mid]->id == id)
+            return arr[mid];
+
+        // If x greater, ignore left half
+        if (arr[mid]->id < id)
+            low = mid + 1;
+
+        // If x is smaller, ignore right half
+        else
+            high = mid - 1;
+    }
+
+    // If we reach here, then element was not present
+    return NULL;
 }

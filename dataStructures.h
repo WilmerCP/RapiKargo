@@ -1,6 +1,30 @@
 #ifndef DATASTRUCTURES_H
 #define DATASTRUCTURES_H
 
+typedef struct delivery delivery;
+
+typedef enum {
+
+    PROCESSING,
+    ON_THE_WAY,
+    DELIVERED
+
+} DeliveryState;
+
+typedef struct delivery {
+
+    int distance;
+    char description[50];
+    int id;
+    int customerId;
+    char from[20];
+    char to[20];
+    int remainingDays;
+    DeliveryState state;
+    delivery* previous;
+
+} delivery;
+
 typedef struct customerNode{
 
     struct customerNode* next;
@@ -8,8 +32,7 @@ typedef struct customerNode{
     char name[20];
     char surname[20];
     char city[20];
-
-    //stack *history;
+    delivery* mostRecent;
 
 
 }   customer;
@@ -40,25 +63,6 @@ city* createCityTree();
 city* findCityNode(city* root, char name[]);
 int calculateDistance(city* root, char name1[], char name2[]);
 
-typedef enum {
-
-    PROCESSING,
-    ON_THE_WAY,
-    DELIVERED
-
-} DeliveryState;
-
-typedef struct delivery {
-
-    int distance;
-    char description[50];
-    int id;
-    int customerId;
-    char from[20];
-    char to[20];
-    DeliveryState state;
-
-} delivery;
 
 typedef struct priorityQueue{
 
@@ -79,5 +83,20 @@ delivery* dequeueDelivery(priorityQueue* pq);
 void freeQueue(priorityQueue* pq);
 
 char* get_delivery_state_name(DeliveryState state);
+
+typedef struct sortedList{
+
+    delivery** arr;
+    int capacity;
+    int items;
+
+} sortedList;
+
+void insertionSort(delivery** arr, int n);
+sortedList* createNewList(int capacity);
+void addToList(sortedList* li, delivery* element);
+void freeList(sortedList* li);
+
+void pushToStack(customer* c, delivery* newCargo);
 
 #endif // DATASTRUCTURES_H

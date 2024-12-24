@@ -4,11 +4,13 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-customer* newCustomer(customer* head, const char* name, const char* surname, char* city, int id){
+customer* newCustomer(customer* head, const char* name, const char* surname, char* city, int id)
+{
 
     customer* node = (customer*) malloc(sizeof(customer));
 
-    if (node == NULL) {
+    if (node == NULL)
+    {
         printf("Memory allocation failed\n");
         return NULL; // Exit the function if allocation fails
     }
@@ -18,11 +20,14 @@ customer* newCustomer(customer* head, const char* name, const char* surname, cha
     strcpy(node->surname,surname);
     strcpy(node->city,city);
 
-    if(head != NULL){
+    if(head != NULL)
+    {
 
         node->next = head;
 
-    }else{
+    }
+    else
+    {
 
         node->next = NULL;
     }
@@ -31,28 +36,35 @@ customer* newCustomer(customer* head, const char* name, const char* surname, cha
 
 }
 
-void printAllCustomers(customer* head) {
-    while (head != NULL) {
+void printAllCustomers(customer* head)
+{
+    while (head != NULL)
+    {
         printf("%s %s, city: %s, id: %d\n", head->name, head->surname, head->city, head->id);
         head = head->next;
     }
 }
 
-void freeCustomers(customer* head) {
+void freeCustomers(customer* head)
+{
     customer* temp;
 
-    while (head != NULL) {
+    while (head != NULL)
+    {
         temp = head;
         head = head->next;
         free(temp);
     }
 }
 
-customer* findCustomer(customer* head, int id){
+customer* findCustomer(customer* head, int id)
+{
 
-    while(head != NULL){
+    while(head != NULL)
+    {
 
-        if(head->id == id){
+        if(head->id == id)
+        {
 
             return head;
 
@@ -65,21 +77,47 @@ customer* findCustomer(customer* head, int id){
 
 }
 
+void pushToStack(customer* c, delivery* newCargo)
+{
+
+    delivery* mostRecent = c->mostRecent;
+
+    if(mostRecent == NULL)
+    {
+
+        c->mostRecent = newCargo;
+
+    }
+    else
+    {
+
+        newCargo ->previous = mostRecent;
+
+        c->mostRecent = newCargo;
+
+    }
+
+}
+
 //Functions related to cities tree
 
-city* newCity(char name[],city* parent){
+city* newCity(char name[],city* parent)
+{
 
     city* newNode = malloc(sizeof(city));
 
     strcpy(newNode->name,name);
     newNode->childrenCount = 0;
 
-    if(parent == NULL){
+    if(parent == NULL)
+    {
 
         newNode->parent = NULL;
         newNode->depth = 0;
 
-    }else{
+    }
+    else
+    {
 
         newNode->parent = parent;
         newNode->depth = parent->depth + 1;
@@ -92,17 +130,22 @@ city* newCity(char name[],city* parent){
 
 }
 
-void printAllCities(city* root){
+void printAllCities(city* root)
+{
 
-    if(root == NULL){
+    if(root == NULL)
+    {
 
         return;
 
-    }else{
+    }
+    else
+    {
 
         int i = 0;
 
-        while(i<root->depth){
+        while(i<root->depth)
+        {
 
             printf("-");
 
@@ -113,7 +156,8 @@ void printAllCities(city* root){
 
         i = 0;
 
-        while(i<root->childrenCount){
+        while(i<root->childrenCount)
+        {
 
             printAllCities(root->children[i]);
 
@@ -124,17 +168,22 @@ void printAllCities(city* root){
     }
 }
 
-void freeCities(city* root){
+void freeCities(city* root)
+{
 
-    if(root == NULL){
+    if(root == NULL)
+    {
 
         return;
 
-    }else{
+    }
+    else
+    {
 
         int i = 0;
 
-        while(i<root->childrenCount){
+        while(i<root->childrenCount)
+        {
 
             freeCities(root->children[i]);
 
@@ -147,31 +196,32 @@ void freeCities(city* root){
     }
 }
 
-city* createCityTree(){
+city* createCityTree()
+{
 
     city* buenosAires = newCity("Buenos Aires",NULL);
 
-        city* laPlata = newCity("La Plata",buenosAires);
+    city* laPlata = newCity("La Plata",buenosAires);
 
-        city* rosario = newCity("Rosario",buenosAires);
+    city* rosario = newCity("Rosario",buenosAires);
 
-            city* corrientes = newCity("Corrientes",rosario);
+    city* corrientes = newCity("Corrientes",rosario);
 
-            city* santaFe = newCity("Santa Fe",rosario);
+    city* santaFe = newCity("Santa Fe",rosario);
 
-            city* cordoba = newCity("Cordoba",rosario);
+    city* cordoba = newCity("Cordoba",rosario);
 
-                city* mendoza = newCity("Mendoza",cordoba);
+    city* mendoza = newCity("Mendoza",cordoba);
 
-        city* marDelPlata = newCity("Mar del Plata",buenosAires);
+    city* marDelPlata = newCity("Mar del Plata",buenosAires);
 
-            city* bahiaBlanca = newCity("Bahia Blanca",marDelPlata);
+    city* bahiaBlanca = newCity("Bahia Blanca",marDelPlata);
 
-                city* neuquen = newCity("Neuquen",bahiaBlanca);
+    city* neuquen = newCity("Neuquen",bahiaBlanca);
 
-                    city* bariloche = newCity("Bariloche",neuquen);
+    city* bariloche = newCity("Bariloche",neuquen);
 
-                    city* ushuaia = newCity("Ushuaia",neuquen);
+    city* ushuaia = newCity("Ushuaia",neuquen);
 
     //printAllCities(buenosAires);
 
@@ -180,31 +230,38 @@ city* createCityTree(){
 
 }
 
-city* findCityNode(city* root, char name[]){
+city* findCityNode(city* root, char name[])
+{
 
-    if(root == NULL){
+    if(root == NULL)
+    {
 
         printf("Received null as a root!!\n");
 
         return NULL;
 
-    }else{
+    }
+    else
+    {
 
-        if(strcmp(root->name,name) == 0){
+        if(strcmp(root->name,name) == 0)
+        {
 
-        return root;
+            return root;
 
         }
 
         int i = 0;
 
-        while(i<root->childrenCount){
+        while(i<root->childrenCount)
+        {
 
             city* found = findCityNode(root->children[i],name);
 
-            if(found != NULL){
+            if(found != NULL)
+            {
 
-            return found;
+                return found;
 
             }
 
@@ -217,9 +274,11 @@ city* findCityNode(city* root, char name[]){
     return NULL;
 }
 
-int calculateDistance(city* root, char name1[], char name2[]){
+int calculateDistance(city* root, char name1[], char name2[])
+{
 
-    if(root == NULL){
+    if(root == NULL)
+    {
 
         return -1;
 
@@ -229,7 +288,8 @@ int calculateDistance(city* root, char name1[], char name2[]){
 
     city* node2 = findCityNode(root,name2);
 
-    if(node1 == NULL || node2 == NULL){
+    if(node1 == NULL || node2 == NULL)
+    {
 
         printf("One of the two cities does not exist in the route tree\n");
         return -1;
@@ -239,19 +299,22 @@ int calculateDistance(city* root, char name1[], char name2[]){
     int d1 = node1->depth;
     int d2 = node2->depth;
 
-    while(node1->depth > node2->depth){
+    while(node1->depth > node2->depth)
+    {
 
         node1 = node1->parent;
 
     }
 
-    while(node2->depth > node1->depth){
+    while(node2->depth > node1->depth)
+    {
 
         node2 = node2->parent;
 
     }
 
-    while(node1 != node2){
+    while(node1 != node2)
+    {
 
         node1 = node1->parent;
         node2 = node2->parent;
@@ -264,9 +327,11 @@ int calculateDistance(city* root, char name1[], char name2[]){
 
 }
 
-int parentNode(int i){
+int parentNode(int i)
+{
 
-    if(i == 0){
+    if(i == 0)
+    {
 
         return -1;
 
@@ -276,19 +341,22 @@ int parentNode(int i){
 
 }
 
-int leftChild(int i){
+int leftChild(int i)
+{
 
     return 2*i + 1;
 
 }
 
-int rightChild(int i){
+int rightChild(int i)
+{
 
     return 2*i +2;
 
 }
 
-void swapItems(delivery** a, delivery** b){
+void swapItems(delivery** a, delivery** b)
+{
 
     delivery* temp = *a;
 
@@ -298,7 +366,8 @@ void swapItems(delivery** a, delivery** b){
 }
 
 
-priorityQueue* createNewQueue(int capacity){
+priorityQueue* createNewQueue(int capacity)
+{
 
     if(capacity <= 0)
         return NULL;
@@ -314,7 +383,8 @@ priorityQueue* createNewQueue(int capacity){
 
 }
 
-delivery* createNewDelivery(int distance, char from[],char to[],int customerId, int id,const char description[]){
+delivery* createNewDelivery(int distance, char from[],char to[],int customerId, int id,const char description[])
+{
 
     delivery* temp = (delivery*) malloc(sizeof(delivery));
 
@@ -322,6 +392,8 @@ delivery* createNewDelivery(int distance, char from[],char to[],int customerId, 
     temp -> customerId = customerId;
     temp -> id = id;
     temp -> state = PROCESSING;
+    temp -> remainingDays = distance;
+    temp -> previous = NULL;
 
     strcpy(temp->description,description);
     strcpy(temp->from,from);
@@ -331,7 +403,8 @@ delivery* createNewDelivery(int distance, char from[],char to[],int customerId, 
 
 }
 
-void increaseHeapSize(priorityQueue* pq){
+void increaseHeapSize(priorityQueue* pq)
+{
 
     if(pq ==  NULL)
         return;
@@ -342,12 +415,14 @@ void increaseHeapSize(priorityQueue* pq){
 
 }
 
-void heapifyUp(delivery** heap, int index){
+void heapifyUp(delivery** heap, int index)
+{
 
     int p = parentNode(index);
 
 
-    while(index>0 && heap[index]->distance<heap[p]->distance){
+    while(index>0 && heap[index]->distance<heap[p]->distance)
+    {
 
         swapItems(&heap[index],&heap[p]);
 
@@ -358,12 +433,14 @@ void heapifyUp(delivery** heap, int index){
 
 }
 
-void enqueueDelivery(priorityQueue* pq, delivery* element){
+void enqueueDelivery(priorityQueue* pq, delivery* element)
+{
 
     if(pq == NULL || element == NULL)
         return;
 
-    if(pq->items == pq->capacity){
+    if(pq->items == pq->capacity)
+    {
 
         increaseHeapSize(pq);
 
@@ -377,7 +454,8 @@ void enqueueDelivery(priorityQueue* pq, delivery* element){
 
 }
 
-void heapifyDown(priorityQueue* pq,int index){
+void heapifyDown(priorityQueue* pq,int index)
+{
 
     int smallest = index;
 
@@ -387,19 +465,22 @@ void heapifyDown(priorityQueue* pq,int index){
 
     delivery** heap = pq->heap;
 
-    if(left < pq->items && heap[left]->distance < heap[smallest]->distance){
+    if(left < pq->items && heap[left]->distance < heap[smallest]->distance)
+    {
 
         smallest = left;
 
     }
 
-    if(right < pq->items && heap[right]->distance < heap[smallest]->distance){
+    if(right < pq->items && heap[right]->distance < heap[smallest]->distance)
+    {
 
         smallest = right;
 
     }
 
-    if(smallest != index){
+    if(smallest != index)
+    {
 
         swapItems(&heap[smallest],&heap[index]);
 
@@ -409,51 +490,176 @@ void heapifyDown(priorityQueue* pq,int index){
 
 }
 
-delivery* dequeueDelivery(priorityQueue* pq){
+delivery* dequeueDelivery(priorityQueue* pq)
+{
 
-    delivery* temp = pq->heap[0];
+    if(pq->items == 1)
+    {
 
-    swapItems(&pq->heap[0],&pq->heap[pq->items-1]);
+        delivery* temp = pq->heap[0];
 
-    heapifyDown(pq,0);
+        pq->items--;
 
-    return temp;
-
-}
-
-
-void freeQueue(priorityQueue* pq){
-
-    free(pq->heap);
-    free(pq);
-
-}
-
-char* get_delivery_state_name(DeliveryState state){
-
-    switch (state){
-
-        case PROCESSING:
-
-            return "İşleme alındı";
-
-            break;
-
-        case ON_THE_WAY:
-
-            return "Yolda";
-
-            break;
-
-        case DELIVERED:
-
-            return "Teslim edilmiş";
-
-            break;
-
-        default:
-
-            return "Bilinmeyen";
+        return temp;
 
     }
+
+    if(pq->items>1)
+    {
+
+        delivery* temp = pq->heap[0];
+
+        swapItems(&pq->heap[0],&pq->heap[pq->items-1]);
+
+        pq->items--;
+
+        heapifyDown(pq,0);
+
+        return temp;
+
+    }
+
+    return NULL;
+
+}
+
+
+void freeQueue(priorityQueue* pq)
+{
+
+    int i;
+    int n = pq->items;
+
+    for(i=0; i < n; i++)
+    {
+
+        free(pq->heap[i]);
+
+    }
+
+    free(pq->heap);
+    pq->heap = NULL;
+    free(pq);
+    pq = NULL;
+
+}
+
+char* get_delivery_state_name(DeliveryState state)
+{
+
+    switch (state)
+    {
+
+    case PROCESSING:
+
+        return "İşleme alındı";
+
+        break;
+
+    case ON_THE_WAY:
+
+        return "Yolda";
+
+        break;
+
+    case DELIVERED:
+
+        return "Teslim edilmiş";
+
+        break;
+
+    default:
+
+        return "Bilinmeyen";
+
+    }
+}
+
+void insertionSort(delivery** arr, int n)
+{
+
+    int i;
+
+    for (i = 1; i < n; ++i)
+    {
+        delivery* temp = arr[i];
+        int j = i - 1;
+
+        while (j >= 0 && arr[j]->id > temp->id)
+        {
+            arr[j + 1] = arr[j];
+            j = j - 1;
+        }
+        arr[j + 1] = temp;
+    }
+}
+
+void increaseListSize(sortedList* li)
+{
+
+    if(li ==  NULL)
+        return;
+
+    li->capacity = li->capacity*2;
+
+    li->arr = (delivery**) realloc(li->arr,sizeof(delivery)*li->capacity);
+
+}
+
+sortedList* createNewList(int capacity)
+{
+
+    if(capacity <= 0)
+        return NULL;
+
+    sortedList* li = (sortedList*) malloc(sizeof(sortedList));
+
+    li->arr = (delivery**) malloc(sizeof(delivery)*capacity);
+
+    li->capacity = capacity;
+    li->items = 0;
+
+    return li;
+
+}
+
+void addToList(sortedList* li, delivery* element)
+{
+
+
+    if(li == NULL || element == NULL)
+    {
+
+
+        return;
+
+    }
+
+    if(li->items == li->capacity)
+    {
+
+        increaseListSize(li);
+
+    }
+
+    li->arr[li->items] = element;
+
+    li->items++;
+
+    insertionSort(li->arr,li->items);
+
+}
+
+void freeList(sortedList* li)
+{
+    int i;
+    for(i = 0; i < li->items; i++)
+    {
+        free(li->arr[i]);
+        li->arr[i] = NULL;
+    }
+    free(li->arr);
+    li->arr = NULL;
+    free(li);
+    li = NULL;
 }
